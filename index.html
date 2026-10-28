@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="lo">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ບັນທຶກໄລເດີ foodpanda</title>
+<meta name="theme-color" content="#D70F64">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="ໄລເດີ">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Lao:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F5F4F6;--surface:#fff;--ink:#1E1B22;--mute:#6C6674;--line:#E4E1E8;--pink:#D70F64;--pinkbg:#FCE4EF;--ok:#0E7A4E;--bad:#C4231B;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#16131A;--surface:#211D27;--ink:#F3F0F6;--mute:#A39DAD;--line:#342F3C;--pink:#FF5C9E;--pinkbg:#3A1829;--ok:#4CD39B;--bad:#FF8B84;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#16131A;--surface:#211D27;--ink:#F3F0F6;--mute:#A39DAD;--line:#342F3C;--pink:#FF5C9E;--pinkbg:#3A1829;--ok:#4CD39B;--bad:#FF8B84;color-scheme:dark}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Noto Sans Lao','Phetsarath OT',system-ui,sans-serif;font-size:16px;line-height:1.5;padding-bottom:110px}
+.wrap{max-width:520px;margin:0 auto;padding:16px}
+h1{font-size:18px;margin:4px 0 14px;font-weight:800}
+.tabs{display:grid;grid-template-columns:repeat(3,1fr);background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:4px;gap:4px}
+.tabs button{border:0;background:none;color:var(--mute);font:inherit;font-weight:600;padding:9px 4px;border-radius:9px;cursor:pointer}
+.tabs button[aria-selected="true"]{background:var(--pink);color:#fff}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid var(--pink);outline-offset:2px}
+.hero{margin:22px 0 8px}
+.hero .lbl{color:var(--mute);font-size:14px}
+.hero .big{font-size:clamp(44px,15vw,64px);font-weight:800;line-height:1.1;letter-spacing:-1px}
+.hero .big small{font-size:.38em;font-weight:600;margin-left:4px;letter-spacing:0}
+.pos{color:var(--ok)}.neg{color:var(--bad)}
+.bar{display:flex;height:14px;border-radius:7px;overflow:hidden;background:var(--line);margin:14px 0 10px}
+.bar i{display:block;height:100%}
+.bar .c{background:var(--pink)}.bar .p{background:var(--ok)}
+.legend{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.legend div{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.legend span{display:block;font-size:13px;color:var(--mute)}
+.legend b{font-size:18px}
+.legend .in b{color:var(--ink)}.legend .co b{color:var(--pink)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);margin:14px 0 22px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.stats div{padding:12px 6px;text-align:center}
+.stats div+div{border-left:1px solid var(--line)}
+.stats b{display:block;font-size:17px}
+.stats span{font-size:12px;color:var(--mute)}
+.list{display:flex;flex-direction:column;gap:8px}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px;width:100%;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font:inherit;color:inherit;cursor:pointer}
+.row .d{font-weight:600}
+.row .m{font-size:13px;color:var(--mute)}
+.row .r{text-align:right;white-space:nowrap}
+.row .r b{display:block;font-size:17px}
+.empty{padding:28px 12px;text-align:center;color:var(--mute);border:1px dashed var(--line);border-radius:12px}
+.dock{position:fixed;left:0;right:0;bottom:0;padding:12px 16px calc(14px + env(safe-area-inset-bottom,0px));background:linear-gradient(transparent,var(--bg) 40%);pointer-events:none}
+.add{pointer-events:auto;display:block;width:100%;max-width:520px;margin:0 auto;border:0;background:var(--pink);color:#fff;font:inherit;font-weight:800;font-size:17px;padding:15px;border-radius:14px;cursor:pointer}
+.veil{position:fixed;inset:0;background:rgba(10,8,14,.55);display:none;z-index:20}
+.veil.on{display:block}
+.sheet{position:fixed;left:0;right:0;bottom:0;max-height:92%;overflow:auto;background:var(--surface);border-radius:20px 20px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom,0px));transform:translateY(100%);transition:transform .22s ease;z-index:21}
+.sheet.on{transform:none}
+@media (prefers-reduced-motion:reduce){.sheet{transition:none}}
+.sheet .in{max-width:520px;margin:0 auto}
+.sheet h2{margin:0 0 12px;font-size:18px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grid .full{grid-column:1/-1}
+label{display:block;font-size:13px;color:var(--mute);margin-bottom:3px}
+input,textarea{width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 11px}
+.sec{grid-column:1/-1;font-weight:600;font-size:14px;margin-top:6px;padding-top:8px;border-top:1px solid var(--line)}
+.prev{margin:14px 0 10px;padding:10px 12px;border-radius:12px;background:var(--pinkbg);display:flex;justify-content:space-between;align-items:center}
+.prev b{font-size:20px}
+.err{color:var(--bad);font-size:14px;min-height:20px;margin:0 0 6px}
+.acts{display:grid;grid-template-columns:1fr 2fr;gap:10px}
+.acts.solo{grid-template-columns:1fr}
+.acts button{font:inherit;font-weight:700;padding:13px;border-radius:12px;border:1px solid var(--line);background:none;color:var(--ink);cursor:pointer}
+.acts .go{background:var(--pink);border-color:var(--pink);color:#fff}
+.acts .del{color:var(--bad)}
+.acts .hide{display:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>ບັນທຶກໄລເດີ foodpanda</h1>
+  <div class="tabs" role="tablist">
+    <button role="tab" data-p="day" aria-selected="true">ມື້ນີ້</button>
+    <button role="tab" data-p="week" aria-selected="false">ອາທິດນີ້</button>
+    <button role="tab" data-p="month" aria-selected="false">ເດືອນນີ້</button>
+  </div>
+
+  <div class="hero">
+    <div class="lbl">ກຳໄລສຸດທິ <span id="rng"></span></div>
+    <div class="big" id="profit">0<small>₭</small></div>
+  </div>
+  <div class="bar" id="bar" aria-hidden="true"></div>
+  <div class="legend">
+    <div class="in"><span>ລາຍຮັບ</span><b id="inc">0</b></div>
+    <div class="co"><span>ຕົ້ນທຶນ</span><b id="cost">0</b></div>
+  </div>
+
+  <div class="list" id="list" style="margin-top:22px"></div>
+</div>
+
+<div class="dock"><button class="add" id="addBtn">+ ເພີ່ມບັນທຶກ</button></div>
+
+<div class="veil" id="veil"></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sTitle">
+  <div class="in">
+    <h2 id="sTitle">ເພີ່ມບັນທຶກ</h2>
+    <div class="grid">
+      <div class="full"><label for="f-date">ວັນທີ</label><input id="f-date" type="date"></div>
+      <div class="sec">ລາຍຮັບ (₭)</div>
+      <div><label for="f-fee">ຄ່າສົ່ງອາຫານ</label><input id="f-fee" type="number" inputmode="numeric" min="0" placeholder="0"></div>
+      <div><label for="f-tip">ທິບ / ໂບນັດ</label><input id="f-tip" type="number" inputmode="numeric" min="0" placeholder="0"></div>
+      <div class="sec">ຕົ້ນທຶນ (₭)</div>
+      <div><label for="f-fuel">ຄ່ານ້ຳມັນ / ຄ່າໄຟ</label><input id="f-fuel" type="number" inputmode="numeric" min="0" placeholder="0"></div>
+      <div><label for="f-other">ຄ່າໃຊ້ຈ່າຍອື່ນ</label><input id="f-other" type="number" inputmode="numeric" min="0" placeholder="0"></div>
+      <div class="full"><label for="f-note">ໝາຍເຫດ</label><textarea id="f-note" rows="2" placeholder="ເຊັ່ນ: ຝົນຕົກ, ສ້ອມລົດ"></textarea></div>
+    </div>
+    <div class="prev"><span>ກຳໄລຂອງບັນທຶກນີ້</span><b id="pv">0 ₭</b></div>
+    <p class="err" id="err"></p>
+    <div class="acts" id="acts">
+      <button id="cancel">ປິດ</button>
+      <button class="go" id="saveBtn">ບັນທຶກ</button>
+      <button class="del hide" id="delBtn">ລຶບບັນທຶກນີ້</button>
+    </div>
+  </div>
+</div>
+
+<script>
+var KEY='rider-log-v1', rows=[], period='day', editing=null;
+try{ rows=JSON.parse(localStorage.getItem(KEY)||'[]'); }catch(e){ rows=[]; }
+if(!Array.isArray(rows)) rows=[];
+function persist(){ try{ localStorage.setItem(KEY,JSON.stringify(rows)); }catch(e){} }
+function $(id){ return document.getElementById(id); }
+function fmt(n){ return Math.round(n).toLocaleString('en-US'); }
+function num(id){ return parseFloat($(id).value)||0; }
+function pad(n){ return String(n).padStart(2,'0'); }
+function ymd(d){ return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()); }
+function esc(s){ return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+var DAYS=['ອາທິດ','ຈັນ','ອັງຄານ','ພຸດ','ພະຫັດ','ສຸກ','ເສົາ'];
+function short(s){ var p=s.split('-'); return p[2]+'/'+p[1]; }
+
+function range(){
+  var n=new Date(), s=new Date(n.getFullYear(),n.getMonth(),n.getDate()), e=new Date(s);
+  if(period==='week'){ s.setDate(s.getDate()-((s.getDay()+6)%7)); e=new Date(s); e.setDate(s.getDate()+6); }
+  if(period==='month'){ s=new Date(n.getFullYear(),n.getMonth(),1); e=new Date(n.getFullYear(),n.getMonth()+1,0); }
+  return [ymd(s),ymd(e)];
+}
+
+function render(){
+  var r=range(), inRange=rows.filter(function(x){ return x.date>=r[0] && x.date<=r[1]; });
+  inRange.sort(function(a,b){ return a.date<b.date?1:a.date>b.date?-1:b.id-a.id; });
+  var inc=0,cost=0;
+  inRange.forEach(function(x){ inc+=x.fee+x.tip; cost+=x.fuel+x.other; });
+  var pf=inc-cost;
+  $('rng').textContent = period==='day' ? short(r[0]) : short(r[0])+' – '+short(r[1]);
+  $('profit').innerHTML = fmt(pf)+'<small>₭</small>';
+  $('profit').className = 'big '+(pf<0?'neg':'pos');
+  $('inc').textContent = fmt(inc)+' ₭';
+  $('cost').textContent = fmt(cost)+' ₭';
+  var cs = inc>0 ? Math.min(100,cost/inc*100) : 0, ps = inc>0 ? 100-cs : 0;
+  $('bar').innerHTML = '<i class="c" style="width:'+cs+'%"></i><i class="p" style="width:'+ps+'%"></i>';
+  if(!inRange.length){
+    $('list').innerHTML = '<div class="empty">ຍັງບໍ່ມີບັນທຶກໃນຊ່ວງນີ້. ກົດ “ເພີ່ມບັນທຶກ” ເພື່ອໃສ່ລາຍຮັບ ແລະ ຕົ້ນທຶນ.</div>';
+    return;
+  }
+  $('list').innerHTML = inRange.map(function(x){
+    var p=x.fee+x.tip-x.fuel-x.other, dt=new Date(x.date+'T00:00:00');
+    var meta = x.note ? esc(x.note) : '';
+    return '<button class="row" data-id="'+x.id+'"><div><div class="d">'+DAYS[dt.getDay()]+' '+short(x.date)+'</div><div class="m">'+meta+'</div></div>'+
+      '<div class="r"><b class="'+(p<0?'neg':'pos')+'">'+fmt(p)+'</b><span class="m">ເຂົ້າ '+fmt(x.fee+x.tip)+' / ອອກ '+fmt(x.fuel+x.other)+'</span></div></button>';
+  }).join('');
+}
+
+function preview(){
+  var p=num('f-fee')+num('f-tip')-num('f-fuel')-num('f-other');
+  $('pv').textContent = fmt(p)+' ₭';
+  $('pv').className = p<0?'neg':'';
+}
+
+function openSheet(id){
+  editing=id; $('err').textContent='';
+  var x = id ? rows.filter(function(r){return r.id===id;})[0] : null;
+  $('sTitle').textContent = x ? 'ແກ້ໄຂບັນທຶກ' : 'ເພີ່ມບັນທຶກ';
+  $('f-date').value = x ? x.date : ymd(new Date());
+  ['fee','tip','fuel','other'].forEach(function(k){ $('f-'+k).value = x && x[k] ? x[k] : ''; });
+  $('f-note').value = x ? x.note : '';
+  $('delBtn').classList.toggle('hide', !x);
+  $('acts').classList.toggle('solo', false);
+  $('veil').classList.add('on'); $('sheet').classList.add('on');
+  preview();
+}
+function closeSheet(){ $('veil').classList.remove('on'); $('sheet').classList.remove('on'); }
+
+$('addBtn').onclick=function(){ openSheet(null); };
+$('veil').onclick=closeSheet;
+$('cancel').onclick=closeSheet;
+['fee','tip','fuel','other'].forEach(function(k){ $('f-'+k).oninput=preview; });
+
+$('saveBtn').onclick=function(){
+  var d=$('f-date').value;
+  if(!d){ $('err').textContent='ເລືອກວັນທີກ່ອນບັນທຶກ'; return; }
+  if(!(num('f-fee')||num('f-tip')||num('f-fuel')||num('f-other'))){ $('err').textContent='ໃສ່ຕົວເລກລາຍຮັບ ຫຼື ຕົ້ນທຶນຢ່າງໜ້ອຍ 1 ຊ່ອງ'; return; }
+  var rec={ id: editing||Date.now(), date:d, fee:num('f-fee'), tip:num('f-tip'), fuel:num('f-fuel'), other:num('f-other'), note:$('f-note').value.trim() };
+  if(editing){ rows=rows.map(function(r){ return r.id===editing?rec:r; }); } else { rows.push(rec); }
+  persist(); closeSheet(); render();
+};
+$('delBtn').onclick=function(){
+  if(!editing) return;
+  if(!confirm('ລຶບບັນທຶກນີ້ແທ້ບໍ?')) return;
+  rows=rows.filter(function(r){ return r.id!==editing; });
+  persist(); closeSheet(); render();
+};
+$('list').onclick=function(e){
+  var b=e.target.closest('.row'); if(b) openSheet(Number(b.getAttribute('data-id')));
+};
+document.querySelectorAll('.tabs button').forEach(function(b){
+  b.onclick=function(){
+    period=b.getAttribute('data-p');
+    document.querySelectorAll('.tabs button').forEach(function(t){ t.setAttribute('aria-selected', t===b?'true':'false'); });
+    render();
+  };
+});
+document.addEventListener('keydown',function(e){ if(e.key==='Escape') closeSheet(); });
+if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}
+render();
+</script>
+</body>
+</html>
